@@ -18,6 +18,7 @@ public class MyEntityManager
 {
     //A collection of some sort - uses ArrayList here
 
+    private ArrayList<Particle> particles;
     private ArrayList<Entity> entities; //contains miscellaneous entities
     private ArrayList<BlockEntity> blockEntities; //contains anything with a shape that isn't bullet
     private ArrayList<RocketEntity> rocketEntities; //contains bullets that do damage and disappear on contact
@@ -101,6 +102,23 @@ public class MyEntityManager
         }
         //no matching name found
         return null;
+    }
+    
+    public ArrayList<Particle> getAllParticles()
+    {
+        return particles;
+    }
+    
+    public Particle getUnusedParticle()
+    {
+        //continuously moves used particles to the end of the particles list
+        //unused particles make up the smaller indexes of the list
+        if(particles.get(0).isUsed())
+        {
+            return null;
+        }
+        particles.add(particles.remove(0));
+        return particles.remove(0);
     }
 
     public ArrayList<BlockEntity> getBlockEntities()

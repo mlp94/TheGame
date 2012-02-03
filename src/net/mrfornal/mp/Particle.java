@@ -19,7 +19,7 @@ public class Particle
 
     private float fadeSpeed;
     private Vector2f velocity, position;
-    private Image particle;
+    private Image particleImage;
     private boolean isUsed;
     private float fade; //255
 
@@ -32,7 +32,7 @@ public class Particle
         fadeSpeed = fS;
         velocity = v;
         position = p;
-        particle = img;
+        particleImage = img;
         isUsed = true;
         return this;
     }
@@ -60,7 +60,7 @@ public class Particle
         {
             isUsed = false;
         }
-        particle.setAlpha(fade);
+        particleImage.setAlpha(fade);
         return isUsed;
     }
 
@@ -68,7 +68,7 @@ public class Particle
     {
         if (isUsed)
         {
-            g.drawImage(particle, position.x, position.y);
+            g.drawImage(particleImage, position.x, position.y);
         }
 
     }

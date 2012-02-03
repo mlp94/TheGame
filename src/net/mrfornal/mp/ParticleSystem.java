@@ -4,6 +4,9 @@
  */
 package net.mrfornal.mp;
 
+import java.util.ArrayList;
+import org.newdawn.slick.geom.Vector2f;
+
 /**
  *
  * @author pham266693
@@ -12,5 +15,16 @@ package net.mrfornal.mp;
 //This class holds particle emitters at a specific location
 public class ParticleSystem
 {
+    private ArrayList<ParticleEmitter> emitters;
+    private Vector2f position;
+    
+    public ParticleSystem(Vector2f position)
+    {
+        this.position = position;
+    }
+    
+    
+    
+    
     
 }
