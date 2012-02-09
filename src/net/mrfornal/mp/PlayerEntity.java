@@ -47,6 +47,9 @@ public class PlayerEntity extends BlockEntity
         system = new ParticleSystem(image);
         system.setBlendingMode(1);
 //        
+        
+        
+        
     }
 
     @Override

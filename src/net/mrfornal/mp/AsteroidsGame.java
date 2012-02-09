@@ -17,6 +17,7 @@ import org.newdawn.slick.Image;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.geom.Circle;
+import org.newdawn.slick.geom.Vector2f;
 
 /**
  *
@@ -33,6 +34,7 @@ public class AsteroidsGame extends BasicGame
     private static final boolean FULL_SCREEN = false;
     public static boolean debugRender = false;
     private TargetingGUI targetGUI;
+    private static final int MAX_PARTICLES = 1000;
 
     /**
      * @param args the command line arguments
@@ -70,6 +72,7 @@ public class AsteroidsGame extends BasicGame
 
         Image img1 = new Image("resource/image/mp1.png");
         Image img2 = new Image("resource/image/mp1a.png");
+        Image img3 = new Image("resource/image/yellowsquare.png");
 
         //BlockEntity b = new BlockEntity(new Circle(0, 0, 150), "TestBlock2", 7000, 180, 130, +.0f, 0, 20000, null);
         //BlockEntity c = new BlockEntity(new Circle(0, 0, 25), "TestBlock2", 1000, 100, 100, +.0f, 0, 500);
@@ -89,45 +92,48 @@ public class AsteroidsGame extends BasicGame
         manager.addBlockEntity(a);
         manager.setPlayer(a);
 //        manager.addBlockEntity(b);
-        
-        
-        
-        
-        
-        
-        
-        
+
+
+        for (int i = 0; i < MAX_PARTICLES; i++)
+        {
+            manager.addParticle(new Particle());
+
+        }
+
+        Images.getImages().loadImages();
+
+        ParticleSystem pS = new ParticleSystem(0,0);
+        ParticleEmitter pE = new ParticleEmitter(0, 0, 1.0f, .5f, Images.getImages().getImage("yellowsquare"), 5);
+        pE.setIsActive(true);
+        ParticleEmitter pE2 = new ParticleEmitter(10, 50, 1.0f, .5f, Images.getImages().getImage("yellowsquare"), 5);
+        pE.setIsActive(true);
+        ParticleEmitter pE3 = new ParticleEmitter(50, 10, 1.0f, .5f, Images.getImages().getImage("yellowsquare"), 5);
+        pE.setIsActive(true);
+        pS.addEmitter(pE);
+        pS.addEmitter(pE2);
+        pS.addEmitter(pE3);
+        manager.addParticleSystem(pS);
+
     }
 
     @Override
     public void update(GameContainer container, int delta) throws SlickException
     {
+        for (ParticleSystem pS : manager.getAllParticleSystems())
+        {
+            pS.update(container);
+        }
+        for (Particle p : manager.getAllParticles())
+        {
+            p.update();
+        }
+
         for (Entity e : manager.getAllEntities())
         {
             e.update(container, delta);
         }
 
         Input i = container.getInput();
-        /*
-        BlockEntity b = (BlockEntity) manager.getEntity("TestBlock2");
-        
-        if (i.isKeyDown(Input.KEY_UP))
-        {
-        b.getPosition().set(b.getPosition().x,b.getPosition().y-.1f);
-        }
-        if (i.isKeyDown(Input.KEY_LEFT))
-        {
-        b.getPosition().set(b.getPosition().x-.1f,b.getPosition().y);
-        }
-        if (i.isKeyDown(Input.KEY_RIGHT))
-        {
-        b.getPosition().set(b.getPosition().x+.1f,b.getPosition().y);
-        }
-        if (i.isKeyDown(Input.KEY_DOWN))
-        {
-        b.getPosition().set(b.getPosition().x,b.getPosition().y+.1f);
-        }
-         */
 
         if (i.isKeyPressed(Input.KEY_ESCAPE))
         {
@@ -189,6 +195,20 @@ public class AsteroidsGame extends BasicGame
         }
 
         g.scale(scale, scale);
+
+
+        int c = 0;
+        for (Particle p : manager.getAllParticles())
+        {
+            p.render(container, g);
+            if (p.isUsed())
+            {
+                c++;
+            }
+        }
+        //System.out.println(c);
+
+
         for (Entity e : manager.getAllEntities())
         {
             if (e.getName().equals("TestBlock1"))

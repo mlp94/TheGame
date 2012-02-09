@@ -5,6 +5,7 @@
 package net.mrfornal.mp;
 
 import java.util.ArrayList;
+import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.geom.Vector2f;
 
 /**
@@ -21,10 +22,24 @@ public class ParticleSystem
     public ParticleSystem(Vector2f position)
     {
         this.position = position;
+        emitters = new ArrayList<ParticleEmitter>();
+    }
+    public ParticleSystem(float px, float py)
+    {
+        this(new Vector2f(px,py));
     }
     
+    public void addEmitter(ParticleEmitter e)
+    {
+        emitters.add(e);
+    }
     
-    
-    
+    public void update(GameContainer container)
+    {
+        for (ParticleEmitter particleEmitter : emitters)
+        {
+            particleEmitter.update();
+        }
+    }
     
 }

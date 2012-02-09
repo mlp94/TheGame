@@ -30,7 +30,7 @@ public class RocketEntity extends Entity
     double theta;
     double thetaTarget;
     protected Image sprite;
-
+        MyEntityManager manager = MyEntityManager.getInstance();
     public RocketEntity()
     {
         super("missile_0");
@@ -55,6 +55,7 @@ public class RocketEntity extends Entity
         sprite = img;
         target = t;
 
+
     }
 
     public void addToManager()
@@ -67,7 +68,7 @@ public class RocketEntity extends Entity
         if (target != null)
         {
             thetaTarget = (target.getCenterPosition().sub(this.getPosition())).getTheta();
-        }
+        }/*
         //For calculation
         theta %= 360;
         theta += 180;
@@ -81,7 +82,8 @@ public class RocketEntity extends Entity
             theta += 3;
         }
         theta -= 180;
-
+*/
+        theta = thetaTarget;
     }
 
     @Override

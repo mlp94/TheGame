@@ -4,8 +4,10 @@
  */
 package net.mrfornal.mp;
 
+import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
+import org.newdawn.slick.geom.Circle;
 import org.newdawn.slick.geom.Vector2f;
 
 /**
@@ -34,6 +36,7 @@ public class Particle
         position = p;
         particleImage = img;
         isUsed = true;
+        fade = 255;
         return this;
     }
 
@@ -47,29 +50,46 @@ public class Particle
         return setVars(fS, vx, vy, new Vector2f(px, py), img);
     }
 
+    public Vector2f getPosition()
+    {
+        return position;
+    }
+
+    public Vector2f getVelocity()
+    {
+        return velocity;
+    }
+
     public boolean isUsed()
     {
         return isUsed;
     }
 
-    public boolean update()
+    public void killParticle()
     {
-        position.add(velocity);
-        fade -= fadeSpeed;
-        if (fade <= fadeSpeed)
-        {
-            isUsed = false;
-        }
-        particleImage.setAlpha(fade);
-        return isUsed;
+        isUsed = false;
     }
 
-    public void render(Graphics g)
+    public void update()
     {
+        if (isUsed)
+        {
+            position.add(velocity);
+            fade -= fadeSpeed;
+            if (fade <= fadeSpeed)
+            {
+                killParticle();
+            }
+            particleImage.setAlpha(fade);
+        }
+    }
+
+    public void render(GameContainer container, Graphics g)
+    {
+
         if (isUsed)
         {
             g.drawImage(particleImage, position.x, position.y);
         }
-
     }
 }
