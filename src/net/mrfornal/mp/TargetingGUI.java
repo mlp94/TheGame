@@ -37,7 +37,7 @@ public class TargetingGUI
     private float posY;
     private float posX;
     private int ticker = 0;
-    public static final int UPDATE_INTERVAL = 450;
+    public static final int UPDATE_INTERVAL = 100;
 
     public TargetingGUI(GameContainer container) throws SlickException
     {

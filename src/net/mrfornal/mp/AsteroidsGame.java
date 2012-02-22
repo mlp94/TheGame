@@ -5,6 +5,7 @@
 package net.mrfornal.mp;
 
 import java.awt.event.MouseListener;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import net.mrfornal.TheGame;
@@ -27,7 +28,7 @@ import org.newdawn.slick.geom.Vector2f;
 public class AsteroidsGame extends BasicGame
 {
 
-    public static final int BOUNDARY = 5000; //extra boundary on top of screen size
+    public static final int BOUNDARY = 8000; //extra boundary on top of screen size
     private MyEntityManager manager;
     private static final int WIDTH = 800;
     private static final int HEIGHT = 600;
@@ -76,17 +77,13 @@ public class AsteroidsGame extends BasicGame
 
         //BlockEntity b = new BlockEntity(new Circle(0, 0, 150), "TestBlock2", 7000, 180, 130, +.0f, 0, 20000, null);
         //BlockEntity c = new BlockEntity(new Circle(0, 0, 25), "TestBlock2", 1000, 100, 100, +.0f, 0, 500);
-        PlayerEntity a = new PlayerEntity(new Circle(0, 0, 50), "TestBlock1", 100, 0, 0, -.22f, .05f, 2000, img1, img2);
+        PlayerEntity a = new PlayerEntity(new Circle(0, 0, 50), "TestBlock1", 100, 0, 0, -.0f, .0f, 5000, img1, img2);
         //BlockEntity c = new BlockEntity(new Circle(0, 0, 2), "TestBlock3", 3, 440, 240, +.23f, 0);
         //manager.addBlockEntity(c);
 
         for (int i = 1; i < 80; i += 10)
         {
             manager.addBlockEntity(new DebrisEntity(new Circle(0, 0, 10 * i), "TestBlock" + (i + 20) / 10, 500 * i, 40 * i - 400, 15 * i - 400, +.0f, 0, 500 * i, null));
-        }
-        for (int i = 1; i < 80; i += 10)
-        {
-            manager.addBlockEntity(new DebrisEntity(new Circle(0, 0, 10 * i), "TestBlock" + (i + 20) / 10, 500 * i, 40 * i - 700, 15 * i - 800, +.0f, 0, 500 * i, null));
         }
 
         manager.addBlockEntity(a);
@@ -102,27 +99,34 @@ public class AsteroidsGame extends BasicGame
 
         Images.getImages().loadImages();
 
-        ParticleSystem pS = new ParticleSystem(0,0);
-        ParticleEmitter pE = new ParticleEmitter(0, 0, 1.0f, .5f, Images.getImages().getImage("yellowsquare"), 5);
-        pE.setIsActive(true);
-        ParticleEmitter pE2 = new ParticleEmitter(10, 50, 1.0f, .5f, Images.getImages().getImage("yellowsquare"), 5);
-        pE.setIsActive(true);
-        ParticleEmitter pE3 = new ParticleEmitter(50, 10, 1.0f, .5f, Images.getImages().getImage("yellowsquare"), 5);
-        pE.setIsActive(true);
-        pS.addEmitter(pE);
-        pS.addEmitter(pE2);
-        pS.addEmitter(pE3);
-        manager.addParticleSystem(pS);
+        
+//        ParticleSystem pS = new ParticleSystem(0, 0);
+//        ParticleEmitter pE = new ParticleEmitter(0, 0, 1.0f, .5f, Images.getImages().getImage("yellowsquare"), 5);
+//        pE.setIsActive(true);
+//        ParticleEmitter pE2 = new ParticleEmitter(10, 50, 1.0f, .5f, Images.getImages().getImage("yellowsquare"), 5);
+//        pE.setIsActive(true);
+//        ParticleEmitter pE3 = new ParticleEmitter(50, 10, 1.0f, .5f, Images.getImages().getImage("yellowsquare"), 5);
+//        pE.setIsActive(true);
+//        pS.addEmitter(pE);
+//        pS.addEmitter(pE2);
+//        pS.addEmitter(pE3);
+//        manager.addParticleSystem(pS);
 
     }
 
     @Override
     public void update(GameContainer container, int delta) throws SlickException
     {
-        for (ParticleSystem pS : manager.getAllParticleSystems())
+
+
+        ArrayList<ParticleSystem> pSList = manager.getAllParticleSystems();
+        for (int i = 0; i < pSList.size(); i++)
         {
-            pS.update(container);
+                pSList.get(i).update(container);
+                if(pSList.get(i).remove)
+                    pSList.remove(i);
         }
+
         for (Particle p : manager.getAllParticles())
         {
             p.update();
@@ -132,6 +136,8 @@ public class AsteroidsGame extends BasicGame
         {
             e.update(container, delta);
         }
+
+//        System.out.println(manager.getRocketEntities().size());
 
         Input i = container.getInput();
 
@@ -203,7 +209,7 @@ public class AsteroidsGame extends BasicGame
             p.render(container, g);
             if (p.isUsed())
             {
-                c++;
+                c++; //sshhh
             }
         }
         //System.out.println(c);

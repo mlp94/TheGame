@@ -30,7 +30,9 @@ public class RocketEntity extends Entity
     double theta;
     double thetaTarget;
     protected Image sprite;
-        MyEntityManager manager = MyEntityManager.getInstance();
+    MyEntityManager manager = MyEntityManager.getInstance();
+    ParticleSystem pS;
+
     public RocketEntity()
     {
         super("missile_0");
@@ -55,12 +57,17 @@ public class RocketEntity extends Entity
         sprite = img;
         target = t;
 
+        pS = new ParticleSystem(pos); //pointer!
+        ParticleEmitter pE = new ParticleEmitter(0, 0, 2.0f, .4f, Images.getImages().getImage("yellowsquare"), 2f);
+        pE.setIsActive(true);
+        pS.addEmitter(pE);
+        manager.addParticleSystem(pS);
 
     }
 
     public void addToManager()
     {
-        MyEntityManager.getInstance().addBulletEntity(this);
+        MyEntityManager.getInstance().addRocketEntity(this);
     }
 
     public void turnMissile()
@@ -68,29 +75,31 @@ public class RocketEntity extends Entity
         if (target != null)
         {
             thetaTarget = (target.getCenterPosition().sub(this.getPosition())).getTheta();
-        }/*
+        }
         //For calculation
         theta %= 360;
-        theta += 180;
-        thetaTarget += 180;
         //if theta is bigger...
         if ((int) (theta - thetaTarget) > 0 && target != null)
         {
-            theta -= 3;
+            theta -= 5;
         } else if ((int) (theta - thetaTarget) < 0 && target != null)
         {
-            theta += 3;
+            theta += 5;
         }
-        theta -= 180;
-*/
-        theta = thetaTarget;
+
+        //    theta = thetaTarget;
     }
 
     @Override
     public void update(GameContainer container, int delta) throws SlickException
     {
+
+
+
+//        System.out.println(pS.getPosition());
+
         ArrayList<BlockEntity> temp = MyEntityManager.getInstance().getBlockEntities();
-        ArrayList<RocketEntity> temp2 = MyEntityManager.getInstance().getBulletEntities();
+//        ArrayList<RocketEntity> temp2 = MyEntityManager.getInstance().getBulletEntities();
 
         /*
         int index = 0;
@@ -116,7 +125,8 @@ public class RocketEntity extends Entity
 //        }
         turnMissile();
         acceleration.setTheta(theta);
-        acceleration.scale(0.9999999f);
+        acceleration.scale(0.999f);
+        pS.getEmitters().get(0).setEmitRate(.0002f/(acceleration.lengthSquared()));
 
         position.add(velocity);
         velocity.add(acceleration);
@@ -127,24 +137,37 @@ public class RocketEntity extends Entity
             //will not hit original block that fired the bullet
 
 
+            //if not original block fired from and is inside another block, collide with block
             if (!e.getName().equals(originBlock) && e.getBlock().contains(this.getPosition().x, this.getPosition().y))
             {
-                //damage here!
-                //remove bullet from MyEntityManager
-                //TODO: Make damage better!
-                deadBullet = true;
-                e.takeDamage(this.damage);
-
-                //destroy BlockEntity if below 0 hp
-                if (e.getHP() <= 0)
-                {
-                    temp.remove(i);
-                }
+                killBullet(temp, i, e);
             }
         }
         if (target != null && target.getHP() <= 0)
         {
             target = null;
+        }
+    }
+
+    public void killParticleSystem()
+    {
+        pS.getEmitters().get(0).setIsActive(false);//should be one in the thing
+        pS.remove = true;
+    }
+
+    public void killBullet(ArrayList<BlockEntity> list, int index, BlockEntity e)
+    {
+        //damage here!
+        //remove bullet from MyEntityManager
+        //TODO: Make damage better!
+        deadBullet = true;
+        e.takeDamage(this.damage);
+        killParticleSystem();
+        
+        //destroy BlockEntity if below 0 hp
+        if (e.getHP() <= 0)
+        {
+            list.remove(index);
         }
     }
 
@@ -159,6 +182,7 @@ public class RocketEntity extends Entity
     {
         sprite.setRotation((float) theta);
         g.drawImage(sprite, position.x, position.y);
+
 
         //old basic bullet render
         /*

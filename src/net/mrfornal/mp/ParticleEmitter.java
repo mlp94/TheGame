@@ -24,14 +24,14 @@ public class ParticleEmitter
     private float maxVelocity;
     Image particleImage;
     private boolean isActive; //true if the emitter is sending particles - does not turn false if max particles are reached
-    private int emitRate; //ticks per particle emission
+    private float emitRate; //ticks per particle emission
     private int ticker; //set to 0 once it hit emitRate, increments each tick
 
     public ParticleEmitter()
     {
     }
 
-    public ParticleEmitter(Vector2f p, float fS, float maxV, Image img,int rate)
+    public ParticleEmitter(Vector2f p, float fS, float maxV, Image img,float rate)
     {
         //particles = new ArrayList<Particle>();
         position = p;
@@ -41,7 +41,7 @@ public class ParticleEmitter
         emitRate = rate;
     }
 
-    public ParticleEmitter(float px, float py, float fS, float maxV, Image img,int rate)
+    public ParticleEmitter(float px, float py, float fS, float maxV, Image img,float rate)
     {
         this(new Vector2f(px, py), fS, maxV, img,rate);
 
@@ -67,7 +67,7 @@ public class ParticleEmitter
 //        this.particles = particles;
 //    }
 
-    public void sendParticle()
+    public void sendParticle(Vector2f systemPos)
     {
         Particle temp = manager.getUnusedParticle();
         if (temp != null)
@@ -75,7 +75,7 @@ public class ParticleEmitter
             /*particles.add*/temp.setVars(fadeSpeed,
                     (float) (maxVelocity * Math.random()-maxVelocity * Math.random())*2,
                     (float) (maxVelocity * Math.random()-maxVelocity * Math.random())*2,
-                    position.copy(), particleImage);
+                    position.copy().add(systemPos), particleImage);
         }
     }
 
@@ -84,12 +84,12 @@ public class ParticleEmitter
         position.setTheta(theta);
     }
 
-    public int getEmitRate()
+    public float getEmitRate()
     {
         return emitRate;
     }
 
-    public void setEmitRate(int emitRate)
+    public void setEmitRate(float emitRate)
     {
         this.emitRate = emitRate;
     }
@@ -103,11 +103,11 @@ public class ParticleEmitter
     {
         this.isActive = isActive;
     }
-    public void update()
+    public void update(Vector2f systemPos)
     {
-        if(ticker++ >= emitRate)
+        if(ticker++ >= emitRate&&isActive)
         {
-            sendParticle();
+            sendParticle(systemPos);
             ticker = 0;
         }
     }    

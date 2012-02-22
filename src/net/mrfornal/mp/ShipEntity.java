@@ -17,10 +17,14 @@ import org.newdawn.slick.geom.Vector2f;
  *
  * @author pham266693
  */
-public class PlayerEntity extends ShipEntity
+public class ShipEntity extends BlockEntity
 {
+    
     //governs what direction input will cause to accelerate
 
+    protected double theta;
+    protected Vector2f engineAcceleration;
+    protected Image accelerationSprite;
     int weaponCooldownMax = 20;
     int cooldown = 0;
     private Vector2f engineParticle1;
@@ -28,25 +32,14 @@ public class PlayerEntity extends ShipEntity
     Image image;
     ParticleSystem system;
 
-    public PlayerEntity(Shape s, String name, float mass, float x, float y, float vX, float vY, int maxhp, Image spr, Image aSpr) throws SlickException
+    public ShipEntity(Shape s, String name, float mass, float x, float y, float vX, float vY, int maxhp, Image spr, Image aSpr) throws SlickException
     {
-        super(s, name, mass, x, y, vX, vY, maxhp, spr,aSpr);
-        /*
+        super(s, name, mass, x, y, vX, vY, maxhp, spr);
         engineAcceleration = new Vector2f(.05f, 0); //default acceleration
         engineAcceleration.setTheta(theta);
         accelerationSprite = aSpr;
-         */
-//        image = new Image("resource/image/yellowsquare.png", true);
-        
         //where to emit particles relative to center of block
-        engineParticle1 = new Vector2f(-30f, 10f);
-        engineParticle2 = new Vector2f(-30f, -10f);
         
-        system = new ParticleSystem(getCenterPosition());
-
-        system.addEmitter(new ParticleEmitter(engineParticle1, 1.0f, .8f, Images.getImages().getImage("yellowsquare"), 1.5f));
-        system.addEmitter(new ParticleEmitter(engineParticle2, 1.0f, .8f, Images.getImages().getImage("yellowsquare"), 1.5f));
-
     }
 
     @Override
@@ -70,7 +63,7 @@ public class PlayerEntity extends ShipEntity
 //        ArrayList<Entity> list = MyEntityManager.getInstance().getEntitiesOfType(getClass());
         ArrayList<BlockEntity> list = MyEntityManager.getInstance().getBlockEntities();
         updateMovement(container, list);
-        updatePlayerInput(container);
+//        updatePlayerInput(container);
     }
 
     //======================================================================
@@ -122,44 +115,43 @@ public class PlayerEntity extends ShipEntity
         block.setX(getPosition().x);
         block.setY(getPosition().y);
     }
-    
-    public void updatePlayerInput(GameContainer container) throws SlickException
-    {
-        //Player Input
-        Input i = container.getInput();
-        applyTheta(theta);
 
-        if (i.isKeyDown(Input.KEY_W))
-        {
-            accelerate();
-        }
-        if (i.isKeyDown(Input.KEY_A))
-        {
-            turnLeft();
-        }
-        if (i.isKeyDown(Input.KEY_S))
-        {
-            decelerate();
-        }
-        if (i.isKeyDown(Input.KEY_D))
-        {
-            turnRight();
-        }
-        if (i.isKeyPressed(Input.KEY_LCONTROL))
-        {
-            fireWeapon();
-        }
-        if (i.isKeyDown(Input.KEY_Z) && i.isKeyDown(Input.KEY_LCONTROL))
-        {
-            cooldown++;
-            if (cooldown == weaponCooldownMax)
-            {
-                fireWeapon();
-                cooldown = 0;
-            }
-        }
+    public void applyTheta(double theta)
+    {
+        engineAcceleration.setTheta(theta);
+        sprite.setRotation((float) theta);
+        accelerationSprite.setRotation((float) theta);
+        //engineParticle1.setTheta(theta);
+        //engineParticle2.setTheta(theta);
     }
 
+    public void turnLeft()
+    {
+        theta -= 3;
+    }
+
+    public void turnRight()
+    {
+        theta += 3;
+    }
+
+    public void accelerate()
+    {
+
+        velocity.add(engineAcceleration);
+    }
+
+    public void decelerate()
+    {
+        velocity.add(engineAcceleration.negate());
+    }
+
+
+    @Override
+    public void init(GameContainer container) throws SlickException
+    {
+        //nothing?
+    }
 
     @Override
     public void render(GameContainer container, Graphics g) throws SlickException

@@ -80,7 +80,8 @@ public class Particle
             {
                 killParticle();
             }
-            particleImage.setAlpha(fade);
+            //just a pointer!
+            //particleImage.setAlpha(fade);
         }
     }
 

@@ -26,9 +26,8 @@ public class MyEntityManager
     private TreeMap<String, RocketEntity> bulletDefaults; //contains stock bullet definitions to be copied into existence
     //singleton instance
     private static MyEntityManager instance;
-
     private BlockEntity player; //the player's accessible state
-    
+
     private MyEntityManager()
     {
         entities = new ArrayList<Entity>();
@@ -106,7 +105,7 @@ public class MyEntityManager
         //no matching name found
         return null;
     }
-    
+
     public void addParticleSystem(ParticleSystem pS)
     {
         particleSystems.add(pS);
@@ -116,19 +115,17 @@ public class MyEntityManager
     {
         return particleSystems;
     }
-    
-    
-    
+
     public void addParticle(Particle p)
     {
         particles.add(p);
     }
-    
+
     public ArrayList<Particle> getAllParticles()
     {
         return particles;
     }
-    
+
     public Particle getUnusedParticle()
     {
         //continuously moves used particles to the end of the particles list
@@ -148,7 +145,7 @@ public class MyEntityManager
         this.blockEntities = blockEntities;
     }
 
-    public ArrayList<RocketEntity> getBulletEntities()
+    public ArrayList<RocketEntity> getRocketEntities()
     {
         for (int i = 0; i < rocketEntities.size(); i++)
         {
@@ -170,15 +167,13 @@ public class MyEntityManager
     {
         return player;
     }
-    
-    
 
-    public void setBulletEntities(ArrayList<RocketEntity> bulletEntities)
+    public void setRocketEntities(ArrayList<RocketEntity> bulletEntities)
     {
         this.rocketEntities = bulletEntities;
     }
 
-    public void addBulletEntity(RocketEntity e)
+    public void addRocketEntity(RocketEntity e)
     {
         rocketEntities.add(e);
     }
@@ -212,6 +207,7 @@ public class MyEntityManager
             }
             if (container.getHeight() + AsteroidsGame.BOUNDARY < block.getMaxY())
             {
+//                System.out.println(AsteroidsGame.BOUNDARY+container.getHeight());
                 velocity.add(boundaryAccelerationY.negate());
                 if (velocity.length() > 2.5f)
                 {
@@ -235,15 +231,17 @@ public class MyEntityManager
                 }
             }
         }
-        for (RocketEntity entity : getBulletEntities())
+        for (RocketEntity entity : getRocketEntities())
         {
             Vector2f position = entity.getPosition();
             if (container.getWidth() + AsteroidsGame.BOUNDARY < position.x || container.getHeight() + AsteroidsGame.BOUNDARY < position.y)
             {
+                entity.killParticleSystem();
                 entity.deadBullet = true;
             }
             if (-AsteroidsGame.BOUNDARY > position.x || -AsteroidsGame.BOUNDARY > position.y)
             {
+                entity.killParticleSystem();
                 entity.deadBullet = true;
             }
         }

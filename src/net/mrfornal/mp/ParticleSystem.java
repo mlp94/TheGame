@@ -18,6 +18,7 @@ public class ParticleSystem
 {
     private ArrayList<ParticleEmitter> emitters;
     private Vector2f position;
+    public boolean remove;//dirty solution!
     
     public ParticleSystem(Vector2f position)
     {
@@ -28,17 +29,32 @@ public class ParticleSystem
     {
         this(new Vector2f(px,py));
     }
+
+    public Vector2f getPosition()
+    {
+        return position;
+    }
+
+    public void setPosition(Vector2f position)
+    {
+        this.position = position;
+    }
     
     public void addEmitter(ParticleEmitter e)
     {
         emitters.add(e);
     }
-    
+
+    public ArrayList<ParticleEmitter> getEmitters()
+    {
+        return emitters;
+    }
+          
     public void update(GameContainer container)
     {
         for (ParticleEmitter particleEmitter : emitters)
         {
-            particleEmitter.update();
+            particleEmitter.update(position);
         }
     }
     
